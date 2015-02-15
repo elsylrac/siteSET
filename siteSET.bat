@@ -3,6 +3,7 @@ echo SiteSET creates a folder and file structure for most basic web projects.
 echo Most input only requires a Y or N keypress.
 echo After which, only a [git init] command is needed to begin hackin'.
 pause
+
 :BEGIN
 cd %USERPROFILE%\Documents\Sites
 set /P SiteDirectory= What will you be naming your project?.
@@ -28,7 +29,18 @@ cd ..\..
 goto CSS
 
 :CSS
-mkdir css & cd css
+
+echo Creating CSS structure . . .
+echo [Y] to inherit default 'css' folder
+echo [N] to name your css folder
+set /P cssName= [Y/N]?
+if /I "%cssName%" EQU "Y" (
+  mkdir css & cd css
+)
+if /I "%cssName%" EQU "N" (
+  set /P cssDir= What name would you like css folder?
+  mkdir "%cssDir%" & cd "%cssDir%"
+)
 type nul > main.css
 set /P sass= Using SASS [Y/N]?
 if /I "%sass%" EQU "Y" goto SASS
@@ -38,14 +50,21 @@ if /I "%js%" EQU "Y" goto JS
 goto
 
 :SASS
+echo // Don't edit main.css. Edit the file in the sass folder >> main.css
 mkdir sass & cd sass
 echo [Y] for (.scss) extension -- Brackets Syntax
 echo [N] for (.sass) extension -- Indent Syntax
 set /P scss= [Y/N]?
-if /I "%scss%" EQU "Y" (type nul > main.scss)
-if /I "%scss%" EQU "N" (type nul > main.sass)
+if /I "%scss%" EQU "Y" (
+  echo /* Main SCSS style sheet for compilation > main.scss
+  echo    use sass or compass' watch command */ >> main.scss
+)
+if /I "%scss%" EQU "N" (
+  echo /* Main SASS style sheet for compilation > main.sass
+  echo    use sass or compass' watch command */ >> main.sass
+)
 cd ..\..
-set /P js= Using Javascript?
+set /P js= Using Javascript[Y/N]?
 if /I "%js%" EQU "Y" goto JS
 goto END
 
@@ -56,7 +75,7 @@ cd ..
 goto END
 
 :END
-echo Don't forget to [git init] 
+echo Don't forget to [git init]
 echo :-)
 pause
 exit
